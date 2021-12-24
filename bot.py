@@ -20,7 +20,16 @@ for i in range(len(cogs)):
 
 
 
-client.run('OTIyOTgxMzUyNjI0NzY3MDE3.YcJXXg.g3og56O-DIA5Q3ppYljdsfntCo8')
+load_dotenv()
+token = os.getenv('DISCORD_TOKEN')
+
+
+
+
+
+
+
+client.run(token)
 """@client.command(pass_context = True)
 async def play(ctx, url: str):
     song_there = os.path.isfile('song.mp3')
