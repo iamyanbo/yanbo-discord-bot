@@ -107,7 +107,7 @@ class music(commands.Cog):
                 
                 try:
 
-                    vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, id)))
+                    vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, server.id)))
                 except ClientException:
                     pass 
         except:
