@@ -14,22 +14,19 @@ client = commands.Bot(command_prefix = '.')
 @client.event
 async def on_ready():
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='The Boys .help'))
-    print('asdf')
+    print('online')
 for i in range(len(cogs)):
     cogs[i].setup(client)
 
 
 
-load_dotenv()
-token = os.getenv('DISCORD_TOKEN')
 
 
 
 
 
 
-
-client.run(token)
+client.run('OTIyOTgxMzUyNjI0NzY3MDE3.YcJXXg.p3JorIs0vEucA3YEI9F8obrQr_Q')
 """@client.command(pass_context = True)
 async def play(ctx, url: str):
     song_there = os.path.isfile('song.mp3')
