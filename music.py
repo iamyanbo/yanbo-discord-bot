@@ -139,7 +139,7 @@ async def check_queue(self, ctx, idy):
                 source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
                 
                 try:
-                    vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, id)))
+                    vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, idy)))
                 except ClientException:
                     pass 
         
