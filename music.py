@@ -14,6 +14,7 @@ class music(commands.Cog):
         self.client = client 
         self.queue = {}
         self.client.remove_command('help')
+        self.queue_name ={}
     @commands.command()
     async def help(self, ctx):
         await ctx.channel.send('```i am bot, beep boop \nplay youtube sing: .play [url]\
@@ -78,6 +79,10 @@ class music(commands.Cog):
             with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
                 info = ydl.extract_info(url, download=False)
                 title = info.get('title', None)
+                if server.id not in self.queue_name:
+                    self.queue_name[server.id] = [title]
+                else: 
+                    self.queue_name[server.id].append(title)
                 print(url)
                 url2 = info['formats'][0]['url']
                 source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
@@ -92,6 +97,10 @@ class music(commands.Cog):
                 info = ydl.extract_info(url, download=False)
                 url2 = info['entries'][0]['url']
                 title = info['entries'][0]['title']
+                if server.id not in self.queue_name:
+                    self.queue_name[server.id] = [title]
+                else: 
+                    self.queue_name[server.id].append(title)
                 source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
                 try:
                     await ctx.channel.send(f'queued **{title}**')
@@ -128,6 +137,12 @@ class music(commands.Cog):
                     pass 
         except:
             await ctx.channel.send('There\'s no music queued')
+    
+    @commands.command()
+    async def q(self, ctx):
+        server = ctx.message.guild
+        await ctx.channel.send('Currently Queued:\n')
+        await ctx.channel.send('\n'.join(self.queue_name[server.id]))
         
 async def check_queue(self, ctx, idy):
     try:
