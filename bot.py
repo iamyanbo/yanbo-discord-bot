@@ -29,7 +29,7 @@ token = os.getenv('DISCORD_TOKEN')
 
 
 
-client.run('OTIyOTgxMzUyNjI0NzY3MDE3.YcJXXg.cf77gK4IRb-Pi9xLrz9-dNiU734')
+client.run(token)
 """@client.command(pass_context = True)
 async def play(ctx, url: str):
     song_there = os.path.isfile('song.mp3')
