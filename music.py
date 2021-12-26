@@ -36,8 +36,7 @@ class music(commands.Cog):
         if message.lower() == 'timothy' or message.lower() == 'timmy':
             user ='<@!194955178770825216>'
             await ctx.channel.send(f'{user} is being sus, pause')
-    
-            
+     
     @commands.command()
     async def join(self, ctx):
         voice_channel = ctx.author.voice.channel
@@ -49,14 +48,10 @@ class music(commands.Cog):
     @commands.command()
     async def dc(self, ctx):
         await ctx.voice_client.disconnect()
-           
-    
-            
-            
+                    
     @commands.command()
     async def play(self, ctx, *message):
         url = ' '.join(message)
-        print(url)
         voice_channel = ctx.author.voice.channel
         server = ctx.message.guild
         if server.id not in self.queue:
@@ -104,7 +99,6 @@ class music(commands.Cog):
                 except ClientException:
                     pass  
                 
-         
     @commands.command()
     async def skip(self, ctx):
         server = ctx.message.guild
@@ -135,10 +129,6 @@ class music(commands.Cog):
         except:
             await ctx.channel.send('There\'s no music queued')
         
-    
-    
-    
-    
 async def check_queue(self, ctx, idy):
     try:
         self.queue[idy].pop(0)
@@ -146,14 +136,11 @@ async def check_queue(self, ctx, idy):
         pass
                     
     if self.queue[idy] != []:
-
-
         vc = ctx.voice_client
         FFMPEG_OPTIONS = {
         'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 
         'options': '-vn'
         }
-    
         YDL_OPTIONS = {
         'format' :'bestaudio',
         'forceduration': True
@@ -162,7 +149,6 @@ async def check_queue(self, ctx, idy):
             info = ydl.extract_info(self.queue[idy][0], download=False)
             url2 = info['formats'][0]['url']
             source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
-            
             try:
                 vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, idy)))
             except ClientException:
