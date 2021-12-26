@@ -6,6 +6,9 @@ from discord.ext import commands
 import youtube_dl
 import asyncio
 
+from youtube_dl.YoutubeDL import YoutubeDL
+import validators
+
 class music(commands.Cog):
     def __init__(self, client):
         self.client = client 
@@ -51,7 +54,9 @@ class music(commands.Cog):
             
             
     @commands.command()
-    async def play(self, ctx, url):
+    async def play(self, ctx, *message):
+        url = ' '.join(message)
+        print(url)
         voice_channel = ctx.author.voice.channel
         server = ctx.message.guild
         if server.id not in self.queue:
@@ -68,21 +73,37 @@ class music(commands.Cog):
         }
         
         YDL_OPTIONS = {
-            'format' :'bestaudio',
-            'forceduration': True
+            'default_search': 'auto',
+            'format' :'--no-playlist, bestaudio',
+            'forceduration': True,
+            'noplaylist': True
         }
         vc = ctx.voice_client
-        with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
-            info = ydl.extract_info(url, download=False)
-            title = info.get('title', None)
-            print(url)
-            url2 = info['formats'][0]['url']
-            source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
-            try:
-                await ctx.channel.send(f'queued **{title}**')
-                vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, server.id)))
-            except ClientException:
-                pass  
+        if validators.url(url):
+            with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
+                info = ydl.extract_info(url, download=False)
+                title = info.get('title', None)
+                print(url)
+                url2 = info['formats'][0]['url']
+                source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
+                try:
+                    await ctx.channel.send(f'queued **{title}**')
+                    vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, server.id)))
+                except ClientException:
+                    pass  
+        else:
+            print('not valid url')
+            with YoutubeDL(YDL_OPTIONS) as ydl:
+                info = ydl.extract_info(url, download=False)
+                url2 = info['entries'][0]['url']
+                title = info['entries'][0]['title']
+                source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
+                try:
+                    await ctx.channel.send(f'queued **{title}**')
+                    vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, server.id)))
+                except ClientException:
+                    pass  
+                
          
     @commands.command()
     async def skip(self, ctx):
@@ -125,6 +146,8 @@ async def check_queue(self, ctx, idy):
         pass
                     
     if self.queue[idy] != []:
+
+
         vc = ctx.voice_client
         FFMPEG_OPTIONS = {
         'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 
