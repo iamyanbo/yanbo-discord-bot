@@ -5,6 +5,7 @@ from discord.errors import ClientException
 from discord.ext import commands
 import youtube_dl
 import asyncio
+import pandas
 
 from youtube_dl.YoutubeDL import YoutubeDL
 import validators
@@ -37,7 +38,7 @@ class music(commands.Cog):
         if message.lower() == 'timothy' or message.lower() == 'timmy':
             user ='<@!194955178770825216>'
             await ctx.channel.send(f'{user} is being sus, pause')
-     
+    
     @commands.command()
     async def join(self, ctx):
         voice_channel = ctx.author.voice.channel
@@ -55,10 +56,6 @@ class music(commands.Cog):
         url = ' '.join(message)
         voice_channel = ctx.author.voice.channel
         server = ctx.message.guild
-        if server.id not in self.queue:
-            self.queue[server.id] = [url]
-        else:
-            self.queue[server.id].append(url)
         if ctx.voice_client is None:
             await voice_channel.connect()
         else: 
@@ -76,26 +73,97 @@ class music(commands.Cog):
         }
         vc = ctx.voice_client
         if validators.url(url):
-            with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
-                info = ydl.extract_info(url, download=False)
-                title = info.get('title', None)
-                if server.id not in self.queue_name:
-                    self.queue_name[server.id] = [title]
-                else: 
-                    self.queue_name[server.id].append(title)
-                print(url)
-                url2 = info['formats'][0]['url']
-                source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
+            if 'list' in url:
+                #make this a seperate function tmr
+                #and make sure the reaction only takes the first one, subsequent reactions will not count
+                
+                print('playlist')
+                msg = await ctx.channel.send('this is a playlist, do you want to play the whole thing?')
+                await msg.add_reaction('👍')
+                await msg.add_reaction('👎')
                 try:
-                    await ctx.channel.send(f'queued **{title}**')
-                    vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, server.id)))
-                except ClientException:
-                    pass  
+                    reaction, user = await self.client.wait_for('reaction_add', timeout=60, check=lambda reaction, user: reaction.emoji in ['👍','👎'] and user == ctx.message.author)
+                    await msg.remove_reaction(reaction.emoji, user)
+                except asyncio.TimeoutError:
+                    await ctx.channel.send('timed out, canceling process')
+                    return await msg.delete()
+                else:    
+                    if str(reaction.emoji) == '👍':
+                        await ctx.channel.send('processing audio, may take a while depending on size of playlist (be aware some items in playlist may not be avaliable)')
+                        YDL_OPTIONS = {
+                            'default_search': 'auto',
+                            'format' :'--yes-playlist, bestaudio',
+                            'forceduration': True,
+                        }
+                        with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
+                            info = ydl.extract_info(url, download=False)
+                            name = info['title']
+                            for key in info['entries']:
+                                title = key['title']
+                                if server.id not in self.queue_name:
+                                    self.queue_name[server.id] = [title]
+                                else: 
+                                    self.queue_name[server.id].append(title)
+                                url2 = key['formats'][0]['url']
+                                if server.id not in self.queue:
+                                    self.queue[server.id] = [url2]
+                                else:
+                                    self.queue[server.id].append(url2)  
+                                
+                            source = await discord.FFmpegOpusAudio.from_probe(info['entries'][0]['formats'][0]['url'], **FFMPEG_OPTIONS)
+                            try:
+                                print(self.queue)
+                                await ctx.channel.send(f'queued playlist: **{name}**')
+                                vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, server.id)))
+                            except ClientException:
+                                pass    
+                    elif str(reaction.emoji) == '👎':
+                            vc = ctx.voice_client
+                            with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
+                                info = ydl.extract_info(url, download=False)
+                                title = info.get('title', None)
+                                if server.id not in self.queue:
+                                    self.queue[server.id] = [url]
+                                else:
+                                    self.queue[server.id].append(url)
+                                if server.id not in self.queue_name:
+                                    self.queue_name[server.id] = [title]
+                                else: 
+                                    self.queue_name[server.id].append(title)
+                                url2 = info['formats'][0]['url']
+                                source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
+                                try:
+                                    await ctx.channel.send(f'queued **{title}**')
+                                    vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, server.id)))
+                                except ClientException:
+                                    pass  
+            else:
+                vc = ctx.voice_client
+                with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
+                    info = ydl.extract_info(url, download=False)
+                    title = info.get('title', None)
+                    if server.id not in self.queue:
+                        self.queue[server.id] = [url]
+                    else:
+                        self.queue[server.id].append(url)
+                    if server.id not in self.queue_name:
+                        self.queue_name[server.id] = [title]
+                    else: 
+                        self.queue_name[server.id].append(title)
+                    url2 = info['formats'][0]['url']
+                    source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
+                    try:
+                        await ctx.channel.send(f'queued **{title}**')
+                        vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, server.id)))
+                    except ClientException:
+                        pass  
+
         else:
-            print('not valid url')
+            print('not valid url, using keyword')
             with YoutubeDL(YDL_OPTIONS) as ydl:
                 info = ydl.extract_info(url, download=False)
                 url2 = info['entries'][0]['url']
+                print(url2)
                 title = info['entries'][0]['title']
                 if server.id not in self.queue_name:
                     self.queue_name[server.id] = [title]
@@ -115,6 +183,7 @@ class music(commands.Cog):
         vc.stop()
         try:
             self.queue[server.id].pop(0)
+            self.queue_name[server.id].pop(0)
             FFMPEG_OPTIONS = {
                 'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 
                 'options': '-vn'
@@ -142,11 +211,15 @@ class music(commands.Cog):
     async def q(self, ctx):
         server = ctx.message.guild
         await ctx.channel.send('Currently Queued:\n')
-        await ctx.channel.send('\n'.join(self.queue_name[server.id]))
-        
+        try:
+            await ctx.channel.send('\n'.join(self.queue_name[server.id]))
+        except:
+            await ctx.channel.send('None')
+
 async def check_queue(self, ctx, idy):
     try:
         self.queue[idy].pop(0)
+        self.queue_name[idy].pop(0)
     except:
         pass
                     

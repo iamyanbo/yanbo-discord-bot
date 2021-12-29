@@ -22,3 +22,4 @@ load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
 
 client.run(token)
+
