@@ -50,15 +50,16 @@ class music(commands.Cog):
                     
     @commands.command()
     async def play(self, ctx, *message):
-        if message == ():
-            await ctx.channel.send('you are playing nothing dumbo')
-            return 
-        url = ' '.join(message)
         try:
             voice_channel = ctx.author.voice.channel
         except:
             await ctx.channel.send('ur not in a vc dumbo')
             return
+        if message == ():
+            await ctx.channel.send('you are playing nothing dumbo')
+            return 
+        url = ' '.join(message)
+        
         server = ctx.message.guild
         if ctx.voice_client is None:
             await voice_channel.connect()
