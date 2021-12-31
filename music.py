@@ -50,9 +50,9 @@ class music(commands.Cog):
                     
     @commands.command()
     async def play(self, ctx, *message):
-        if message == '':
+        if message == ():
             await ctx.channel.send('you are playing nothing dumbo')
-            
+            return 
         url = ' '.join(message)
         try:
             voice_channel = ctx.author.voice.channel
