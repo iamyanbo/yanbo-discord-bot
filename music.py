@@ -178,7 +178,36 @@ class music(commands.Cog):
                     vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, server.id)))
                 except ClientException:
                     pass  
-                
+    
+    @commands.command()
+    async def pause(self, ctx, member: discord.Member):
+        try:
+            await member.edit(mute=True)
+        except:
+            await ctx.channel.send('user is not connected to voice/is paused already')
+        
+    @commands.command()
+    async def unpause(self, ctx, member: discord.Member):
+        try:
+            await member.edit(mute=False)
+        except:
+            await ctx.channel.send('user is not connected to voice/is not paused')
+            
+    @commands.command()
+    async def shuffle(self, ctx, member: discord.Member):
+        voice_channel = ctx.guild.voice_channels
+        await member.move_to(voice_channel[1])
+        time.sleep(1)
+        await member.move_to(voice_channel[0])
+        time.sleep(1)
+        await member.move_to(voice_channel[1])
+        time.sleep(1)
+        await member.move_to(voice_channel[0])
+        time.sleep(1)
+        await member.move_to(voice_channel[1])
+        time.sleep(1)
+        await member.move_to(voice_channel[0])
+    
     @commands.command()
     async def skip(self, ctx):
         server = ctx.message.guild
