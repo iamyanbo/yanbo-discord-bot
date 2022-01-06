@@ -212,32 +212,8 @@ class music(commands.Cog):
     async def skip(self, ctx):
         server = ctx.message.guild
         vc = ctx.voice_client
-        try:
-            vc.stop()
-            self.queue[server.id].pop(0)
-            self.queue_name[server.id].pop(0)
-            FFMPEG_OPTIONS = {
-                'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 
-                'options': '-vn'
-            }
-            
-            YDL_OPTIONS = {
-                'format' :'bestaudio',
-                'forceduration': True
-            }
-            with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
-                info = ydl.extract_info(self.queue[server.id][0], download=False)
-                url2 = info['formats'][0]['url']
-
-                source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
-                
-                try:
-
-                    vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, server.id)))
-                except ClientException:
-                    pass 
-        except:
-            await ctx.channel.send('There\'s no music queued')
+        vc.stop()
+        await check_queue(self, ctx, server.id)
     
     @commands.command(name='q', aliases=['queue'])
     async def q(self, ctx):
