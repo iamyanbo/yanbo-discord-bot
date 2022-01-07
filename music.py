@@ -193,19 +193,19 @@ class music(commands.Cog):
         except:
             await ctx.channel.send('user is not connected to voice/is not paused')
             
-    @commands.command()
+    @commands.command(name='shuffle', aliases=['revive'])
     async def shuffle(self, ctx, member: discord.Member):
         voice_channel = ctx.guild.voice_channels
         await member.move_to(voice_channel[1])
-        time.sleep(1)
+        time.sleep(0.5)
         await member.move_to(voice_channel[0])
-        time.sleep(1)
+        time.sleep(0.5)
         await member.move_to(voice_channel[1])
-        time.sleep(1)
+        time.sleep(0.5)
         await member.move_to(voice_channel[0])
-        time.sleep(1)
+        time.sleep(0.5)
         await member.move_to(voice_channel[1])
-        time.sleep(1)
+        time.sleep(0.5)
         await member.move_to(voice_channel[0])
     
     @commands.command()
