@@ -230,25 +230,27 @@ async def check_queue(self, ctx, idy):
         self.queue_name[idy].pop(0)
     except:
         pass
-                    
-    if self.queue[idy] != []:
-        vc = ctx.voice_client
-        FFMPEG_OPTIONS = {
-        'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 
-        'options': '-vn'
-        }
-        YDL_OPTIONS = {
-        'format' :'bestaudio',
-        'forceduration': True
-        }
-        with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
-            info = ydl.extract_info(self.queue[idy][0], download=False)
-            url2 = info['formats'][0]['url']
-            source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
-            try:
-                vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, idy)))
-            except ClientException:
-                pass 
+    try:                
+        if self.queue[idy] != []:
+            vc = ctx.voice_client
+            FFMPEG_OPTIONS = {
+            'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 
+            'options': '-vn'
+            }
+            YDL_OPTIONS = {
+            'format' :'bestaudio',
+            'forceduration': True
+            }
+            with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
+                info = ydl.extract_info(self.queue[idy][0], download=False)
+                url2 = info['formats'][0]['url']
+                source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
+                try:
+                    vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, idy)))
+                except ClientException:
+                    pass 
+    except:
+        await ctx.channel.send('nothing in queue')
         
 def setup(client):
     client.add_cog(music(client))
