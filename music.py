@@ -215,9 +215,8 @@ class music(commands.Cog):
     async def skip(self, ctx):
         server = ctx.message.guild
         vc = ctx.voice_client
-        vc.stop()
-        loop = asyncio.get_event_loop()
-        loop.stop()
+        vc.pause()
+
         await check_queue(self, ctx, server.id)
     
     @commands.command(name='q', aliases=['queue'])
