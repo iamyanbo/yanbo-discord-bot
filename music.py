@@ -238,8 +238,6 @@ async def check_queue(self, ctx, idy):
     except:
         pass
     print(self.queue)
-    print(self.queue[idy])
-    print(self.queue_name[idy])
     try:                
         if self.queue[idy] != []:
             vc = ctx.voice_client
