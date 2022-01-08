@@ -216,6 +216,8 @@ class music(commands.Cog):
         server = ctx.message.guild
         vc = ctx.voice_client
         vc.stop()
+        loop = asyncio.get_event_loop()
+        loop.close()
         await check_queue(self, ctx, server.id)
     
     @commands.command(name='q', aliases=['queue'])
