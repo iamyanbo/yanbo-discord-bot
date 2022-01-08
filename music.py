@@ -217,7 +217,7 @@ class music(commands.Cog):
         vc = ctx.voice_client
         vc.stop()
         loop = asyncio.get_event_loop()
-        loop.close()
+        loop.stop()
         await check_queue(self, ctx, server.id)
     
     @commands.command(name='q', aliases=['queue'])
@@ -230,7 +230,6 @@ class music(commands.Cog):
             await ctx.channel.send('None')
 
 async def check_queue(self, ctx, idy):
-    print(self.queue[idy])
     try:
         self.queue[idy].pop(0)
         self.queue_name[idy].pop(0)
