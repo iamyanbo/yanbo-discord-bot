@@ -258,7 +258,7 @@ async def check_queue(self, ctx, idy):
                 except ClientException:
                     pass 
         else:
-            ctx.channel.send('end of queue')
+            await ctx.channel.send('end of queue')
     except:
         await ctx.channel.send('nothing in queue')
         
