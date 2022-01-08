@@ -237,7 +237,7 @@ async def check_queue(self, ctx, idy):
         self.queue_name[idy].pop(0)
     except:
         pass
-    print(self.queue)
+    print(self.queue_name)
     try:                
         if self.queue[idy] != []:
             vc = ctx.voice_client
@@ -257,6 +257,8 @@ async def check_queue(self, ctx, idy):
                     vc.play(source, after=lambda e:asyncio.run(check_queue(self, ctx, idy)))
                 except ClientException:
                     pass 
+        else:
+            ctx.channel.send('end of queue')
     except:
         await ctx.channel.send('nothing in queue')
         
