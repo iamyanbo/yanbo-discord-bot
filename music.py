@@ -168,6 +168,10 @@ class music(commands.Cog):
                 info = ydl.extract_info(url, download=False)
                 url2 = info['entries'][0]['url']
                 title = info['entries'][0]['title']
+                if server.id not in self.queue:
+                    self.queue[server.id] = [url2]
+                else: 
+                    self.queue[server.id].append(url2)
                 if server.id not in self.queue_name:
                     self.queue_name[server.id] = [title]
                 else: 
