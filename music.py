@@ -233,8 +233,7 @@ async def check_queue(self, ctx, idy):
         self.queue_name[idy].pop(0)
     except:
         pass
-    for key in self.queue:
-        print(key)
+    print(self.queue)
     print(self.queue[idy])
     print(self.queue_name[idy])
     try:                
