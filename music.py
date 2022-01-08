@@ -195,18 +195,21 @@ class music(commands.Cog):
             
     @commands.command(name='shuffle', aliases=['revive'])
     async def shuffle(self, ctx, member: discord.Member):
-        voice_channel = ctx.guild.voice_channels
-        await member.move_to(voice_channel[1])
-        time.sleep(0.5)
-        await member.move_to(voice_channel[0])
-        time.sleep(0.5)
-        await member.move_to(voice_channel[1])
-        time.sleep(0.5)
-        await member.move_to(voice_channel[0])
-        time.sleep(0.5)
-        await member.move_to(voice_channel[1])
-        time.sleep(0.5)
-        await member.move_to(voice_channel[0])
+        try:
+            voice_channel = ctx.guild.voice_channels
+            await member.move_to(voice_channel[1])
+            time.sleep(0.5)
+            await member.move_to(voice_channel[0])
+            time.sleep(0.5)
+            await member.move_to(voice_channel[1])
+            time.sleep(0.5)
+            await member.move_to(voice_channel[0])
+            time.sleep(0.5)
+            await member.move_to(voice_channel[1])
+            time.sleep(0.5)
+            await member.move_to(voice_channel[0])
+        except:
+            await ctx.channel.send('person not in vc')
     
     @commands.command()
     async def skip(self, ctx):
@@ -225,6 +228,7 @@ class music(commands.Cog):
             await ctx.channel.send('None')
 
 async def check_queue(self, ctx, idy):
+    print(self.queue[idy])
     try:
         self.queue[idy].pop(0)
         self.queue_name[idy].pop(0)
