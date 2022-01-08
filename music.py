@@ -219,7 +219,7 @@ class music(commands.Cog):
     async def skip(self, ctx):
         server = ctx.message.guild
         vc = ctx.voice_client
-        vc.stop()
+        vc.pause()
         await check_queue(self, ctx, server.id)
     
     @commands.command(name='q', aliases=['queue'])
@@ -237,7 +237,6 @@ async def check_queue(self, ctx, idy):
         self.queue_name[idy].pop(0)
     except:
         pass
-    await ctx.channel.send(self.queue_name)
     try:                
         if self.queue[idy] != []:
             vc = ctx.voice_client
