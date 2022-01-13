@@ -41,11 +41,7 @@ class music(commands.Cog):
 
     @commands.command(name='dc', aliases=['disconnect'])
     async def dc(self, ctx):
-        vc = ctx.voice_client
-        vc.pause()
         await ctx.voice_client.disconnect()
-        loop = asyncio.get_event_loop()
-        loop.stop()
         server = ctx.message.guild
         self.queue_name[server.id] = []
         self.queue[server.id] = []
