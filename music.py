@@ -44,6 +44,8 @@ class music(commands.Cog):
         vc = ctx.voice_client
         vc.pause()
         await ctx.voice_client.disconnect()
+        loop = asyncio.get_event_loop()
+        loop.stop()
         server = ctx.message.guild
         self.queue_name[server.id] = []
         self.queue[server.id] = []
