@@ -42,7 +42,7 @@ class music(commands.Cog):
     @commands.command(name='dc', aliases=['disconnect'])
     async def dc(self, ctx):
         vc = ctx.voice_client
-        vc.stop()
+        vc.pause()
         await ctx.voice_client.disconnect()
         server = ctx.message.guild
         self.queue_name[server.id] = []
