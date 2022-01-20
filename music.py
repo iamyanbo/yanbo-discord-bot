@@ -19,7 +19,8 @@ class music(commands.Cog):
     @commands.command(name='help', aliases=['commands'])
     async def help(self, ctx):
         await ctx.channel.send('```i am bot, beep boop \nplay youtube sing: .play [url]\
-            \nfind where people are: .where [person]\n.skip to skip current song```')
+            \nfind where people are: .wheres [person]\n.skip to skip current song \nTo revive someone deafen: .revive [@person] \nTo \
+            pause someone for being sus in VC: .pause [person]```')
     
     @commands.command()
     async def wheres(self, ctx, message):
