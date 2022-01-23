@@ -36,8 +36,11 @@ class music(commands.Cog):
             user ='<@207568895156944896>'
             await ctx.channel.send(f'{user} is being the better brother and probs doing nothing rn cus he is lazy')
         if message.lower() == 'timothy' or message.lower() == 'timmy':
-            user ='<@!194955178770825216>'
+            user = '<@!194955178770825216>'
             await ctx.channel.send(f'{user} is being sus, pause')
+        if message.lower() == 'jt':
+            user = '<@!412090136935923733>'
+            await ctx.channel.send(f'{user} is listening and praising JCole rn, or abusing trundle scrap in TFT)
 
     @commands.command(name='dc', aliases=['disconnect'])
     async def dc(self, ctx):
