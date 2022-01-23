@@ -26,8 +26,8 @@ class music(commands.Cog):
         if message.lower() == "ryan":
             user = '<@!361913675872731136>'
             await ctx.channel.send(f'{user} downstairs showering with his bri\'ish cousins playing csgo and eating and taking a LGBTQ poop, bro like u you take so long to take a fucking shower?\
-            \n like I can probably go to sleep, wake up, eat, workout, shower, do work, and u still be in the shower. LIKE HOW TF U GONNA TAKE SO LONG? what r u doing in there bro? \
-            r u at the top of the Burj Khalifa and ur \'downstairs\' is the first floor? Next time try to use the elevator or some shit man.')
+like I can probably go to sleep, wake up, eat, workout, shower, do work, and u still be in the shower. LIKE HOW TF U GONNA TAKE SO LONG? what r u doing in there bro?\
+r u at the top of the Burj Khalifa and ur \'downstairs\' is the first floor? Next time try to use the elevator or some shit man.')
         if message.lower() == 'john':
             user = '<@432949846991831040>'
             await ctx.channel.send(f'{user} is ganked 😂🤣😔😴💀')
